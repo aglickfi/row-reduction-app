@@ -1,9 +1,6 @@
 # %%
 import numpy as np
 import streamlit as st
-import ipywidgets as widgets
-from ipywidgets import VBox, HBox, Layout
-from IPython.display import display, clear_output, Math
 from math import ceil
 
 # %%
