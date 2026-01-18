@@ -1,4 +1,5 @@
 numpy
 ipywidgets
+IPython
 voila
 notebook
