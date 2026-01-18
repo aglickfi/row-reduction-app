@@ -47,15 +47,21 @@ def matrix_to_tex(matrix):
 
     return latex_str
 
-def problem_generator(prob_num = 6, difficulty = "Small Numbers", low = -12, high = 12):
+def problem_generator(prob_num = 6, difficulty = "Beginner"):
 
     problems = []
 
     for _ in range(prob_num):
-        if difficulty == "Small Numbers":
-            M = small_nice_2x3(low, high)
+        if difficulty == "Beginner":
+
+            M = beginner_2x3(-5, 5)
+
+        elif difficulty == "Intermediate":
+
+            M = intermediate_2x3(-12, 12)
+    
         else:
-            M = big_nice_2x3(low, high)
+            M = advanced_2x3(-20, 20)
         
         # Convert to LaTeX but return string instead of displaying
         latex = matrix_to_tex(M)
@@ -78,32 +84,7 @@ def worksheet_generator(problems):
     
     return header + body + footer
 
-
-def big_nice_2x3(low, high):
-
-    # Generates a (uniformly) random matrix
-
-    while True:
-
-        matrix = np.random.randint(low, high+1, size=(2,3))
-        det = matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0]
-
-        if det != 0:
-            break
-
-
-
-    # Ensures the final matrix has a nice RREF
-
-    b1 = matrix[0][2]
-    b2 = matrix[1][2]
-
-    matrix[0][2] = det*b1
-    matrix[1][2] = det*b2
-
-    return matrix
-
-def small_nice_2x3(low, high):
+def beginner_2x3(low = -5, high = 5):
 
     # Generates a (uniformly) random matrix
 
@@ -129,6 +110,58 @@ def small_nice_2x3(low, high):
 
     return matrix
 
+
+def intermediate_2x3(low = -12, high = 12):
+
+    # Generates a (uniformly) random matrix
+
+    while True: 
+
+        matrix = np.random.randint(low, high+1, size=(2,3))
+
+        # Checking for small determinant
+
+        det = matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0]
+
+        if np.abs(det) <= 5 and det != 0:
+
+            break
+
+    # Ensures the final matrix has a nice RREF
+    
+    b1 = matrix[0][2]
+    b2 = matrix[1][2]
+
+    matrix[0][2] = det*b1
+    matrix[1][2] = det*b2
+
+    return matrix
+
+
+def advanced_2x3(low = -20, high = 20):
+
+    # Generates a (uniformly) random matrix
+
+    while True:
+
+        matrix = np.random.randint(low, high+1, size=(2,3))
+        det = matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0]
+
+        if det != 0:
+            break
+
+
+
+    # Ensures the final matrix has a nice RREF
+
+    b1 = matrix[0][2]
+    b2 = matrix[1][2]
+
+    matrix[0][2] = det*b1
+    matrix[1][2] = det*b2
+
+    return matrix
+
 #display(Math(matrix_to_tex(small_nice_2x3(-10,10))))
 
 
@@ -139,7 +172,7 @@ def small_nice_2x3(low, high):
 # %%
 difficulty = st.selectbox(
     "Mode:",
-    ["Small Numbers", "Large Numbers"]
+    ["Beginner", "Intermediate", "Advanced"]
 )
 
 generate = st.button("Generate system")
@@ -147,7 +180,7 @@ generate = st.button("Generate system")
 # %%
 def show_problems_in_columns(problems):
     # Start LaTeX string
-    latex_str = r"\LARGE\displaystyle \begin{array}{c c}"  # two centered columns
+    latex_str = r"\large\displaystyle \begin{array}{c c}"  # two centered columns
     
     for i in range(0, len(problems), 2):
         row = problems[i:i+2]
