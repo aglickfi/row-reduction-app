@@ -58,7 +58,7 @@ def problem_generator(prob_num = 6, difficulty = "Beginner"):
 
         elif difficulty == "Intermediate":
 
-            M = intermediate_2x3(-12, 12)
+            M = beginner_2x3(-12, 12)
     
         else:
             M = advanced_2x3(-20, 20)
@@ -110,18 +110,17 @@ def beginner_2x3(low = -5, high = 5):
 
     return matrix
 
-
-def intermediate_2x3(low = -12, high = 12):
+def beginner_3x4(low = -5, high = 5):
 
     # Generates a (uniformly) random matrix
 
     while True: 
 
-        matrix = np.random.randint(low, high+1, size=(2,3))
+        matrix = np.random.randint(low, high+1, size=(3,4))
 
         # Checking for small determinant
 
-        det = matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0]
+        det = np.linalg.det(matrix)
 
         if np.abs(det) <= 5 and det != 0:
 
@@ -129,11 +128,13 @@ def intermediate_2x3(low = -12, high = 12):
 
     # Ensures the final matrix has a nice RREF
     
-    b1 = matrix[0][2]
-    b2 = matrix[1][2]
+    b1 = matrix[0][3]
+    b2 = matrix[1][3]
+    b3 = matrix[2][3]
 
-    matrix[0][2] = det*b1
-    matrix[1][2] = det*b2
+    matrix[0][3] = det*b1
+    matrix[1][3] = det*b2
+    matrix[2][3] = det*b3
 
     return matrix
 
