@@ -4,7 +4,7 @@ import streamlit as st
 from math import ceil
 
 # %%
-def format_coef(prevcoef, coef, var):
+def format_coef2x3(prevcoef, coef, var):
 
     #Properly formats system of equations depending on coefficient
 
@@ -31,7 +31,7 @@ def format_coef(prevcoef, coef, var):
     else:
         return f"{coef}{var}"
 
-def matrix_to_tex(matrix):
+def matrix_to_tex2x3(matrix):
     
     # Converts matrix to system of equations
     a, b, c = matrix[0]
@@ -40,14 +40,129 @@ def matrix_to_tex(matrix):
     # Builds LaTeX string
     latex_str = r"\begin{cases}"
     latex_str += r"\begin{aligned}"
-    latex_str += f"{format_coef(1, a,'x')}{format_coef(a, b,'y')} = {c} \\\\"
-    latex_str += f"{format_coef(1, d,'x')}{format_coef(d, e,'y')} = {f}"
+    latex_str += f"{format_coef2x3(1, a,'x')}{format_coef2x3(a, b,'y')} = {c} \\\\"
+    latex_str += f"{format_coef2x3(1, d,'x')}{format_coef2x3(d, e,'y')} = {f}"
     latex_str += r"\end{aligned}"
     latex_str += r"\end{cases}"
 
     return latex_str
 
-def problem_generator(prob_num = 6, difficulty = "Beginner"):
+def format_coef3x4(prevcoef1,prevcoef2, coef, var):
+
+    #Properly formats system of equations depending on coefficient
+
+    if var == 'x':
+        if coef == 0:
+            return "&"
+        elif coef == 1:
+            return f'&{var}'
+        elif coef == -1:
+            return f"-&{var}"
+        else:
+            return f"{coef}&{var}"
+
+    if coef == 0:
+        return ""
+    elif coef == 1 and prevcoef1 == 0 and prevcoef2 == 0:
+        return f"{var}"
+    elif coef == 1:
+        return f"+{var}"
+    elif coef == -1:
+        return f"-{var}"
+    elif coef > 0 and (prevcoef1 != 0 or prevcoef2 != 0):
+        return f"+{coef}{var}"
+    else:
+        return f"{coef}{var}"
+
+def matrix_to_tex3x4(matrix):
+    """
+    Converts a 3x4 augmented matrix into a LaTeX system of equations
+    with variables x, y, z.
+    """
+
+    # Unpack rows
+    a, b, c, d = matrix[0]
+    e, f, g, h = matrix[1]
+    i, j, k, l = matrix[2]
+
+    latex_str = r"\begin{cases}"
+    latex_str += r"\begin{aligned}"
+
+    # Row 1
+    latex_str += (
+        f"{format_coef3x4(0, 0, a, 'x')}"
+        f"{format_coef3x4(a, 0, b, 'y')}"
+        f"{format_coef3x4(a, b, c, 'z')}"
+        f"= {d} \\\\"
+    )
+
+    # Row 2
+    latex_str += (
+        f"{format_coef3x4(0, 0, e, 'x')}"
+        f"{format_coef3x4(e, 0, f, 'y')}"
+        f"{format_coef3x4(e, f, g, 'z')}"
+        f"= {h} \\\\"
+    )
+
+    # Row 3
+    latex_str += (
+        f"{format_coef3x4(0, 0, i, 'x')}"
+        f"{format_coef3x4(i, 0, j, 'y')}"
+        f"{format_coef3x4(i, j, k, 'z')}"
+        f"= {l}"
+    )
+
+    latex_str += r"\end{aligned}"
+    latex_str += r"\end{cases}"
+
+    return latex_str
+
+def arb_format_coef(prevcoef, coef, var):
+
+    #Properly formats system of equations depending on coefficient
+
+    if var == 'x_1':
+        if coef == 0:
+            return "&"
+        elif coef == 1:
+            return f'&{var}'
+        elif coef == -1:
+            return f"-&{var}"
+        else:
+            return f"{coef}&{var}"
+
+    if coef == 0:
+        return ""
+    elif coef == 1 and prevcoef == 0 and var == 'x_2':
+        return f"{var}"
+    elif coef == 1:
+        return f"+{var}"
+    elif coef == -1:
+        return f"-{var}"
+    elif coef > 0:
+        return f"+{coef}{var}"
+    else:
+        return f"{coef}{var}"
+
+def arb_matrix_to_tex(matrix):
+
+    # Builds LaTeX string
+
+    equations, variables = matrix.shape
+
+    latex_str = r"\begin{cases}"
+    latex_str += r"\begin{aligned}"
+    for i in range(equations):
+        latex_str += f"{arb_format_coef(1, matrix[i][0],'x_1')}"
+        for j in range(1, variables-1):
+            latex_str += f"{arb_format_coef(matrix[i][j-1], matrix[i][j],f'x_{{{j+1}}}')}"
+        latex_str += f"= {matrix[i][-1]} \\\\"
+    latex_str += r"\end{aligned}"
+    latex_str += r"\end{cases}"
+
+    return latex_str
+
+def problem_generator2x3(prob_num = 6, difficulty = "Beginner"):
 
     problems = []
 
@@ -64,7 +179,29 @@ def problem_generator(prob_num = 6, difficulty = "Beginner"):
             M = advanced_2x3(-20, 20)
         
         # Convert to LaTeX but return string instead of displaying
-        latex = matrix_to_tex(M)
+        latex = matrix_to_tex2x3(M)
+        problems.append(latex)
+
+    return problems
+
+def problem_generator3x4(prob_num = 6, difficulty = "Beginner"):
+
+    problems = []
+
+    for _ in range(prob_num):
+        if difficulty == "Beginner":
+
+            M = beginner_3x4(-5, 5)
+
+        elif difficulty == "Intermediate":
+
+            M = beginner_3x4(-12, 12)
+    
+        else:
+            M = advanced_3x4(-20, 20)
+        
+        # Convert to LaTeX but return string instead of displaying
+        latex = matrix_to_tex3x4(M)
         problems.append(latex)
 
     return problems
@@ -163,6 +300,34 @@ def advanced_2x3(low = -20, high = 20):
 
     return matrix
 
+def advanced_3x4(low = -20, high = 20):
+
+    # Generates a (uniformly) random matrix
+
+    while True: 
+
+        matrix = np.random.randint(low, high+1, size=(3,4))
+
+        # Checking for small determinant
+
+        det = np.linalg.det(matrix)
+
+        if det != 0:
+
+            break
+
+    # Ensures the final matrix has a nice RREF
+    
+    b1 = matrix[0][3]
+    b2 = matrix[1][3]
+    b3 = matrix[2][3]
+
+    matrix[0][3] = det*b1
+    matrix[1][3] = det*b2
+    matrix[2][3] = det*b3
+
+    return matrix
+
 #display(Math(matrix_to_tex(small_nice_2x3(-10,10))))
 
 
@@ -175,6 +340,30 @@ difficulty = st.selectbox(
     "Mode:",
     ["Beginner", "Intermediate", "Advanced"]
 )
+
+system_size = st.selectbox(
+    "System size:",
+    [
+        "2 variables (2×3)",
+        "3 variables (3×4)",
+        "4 variables (4×5)"
+    ]
+)
+
+if system_size == "2 variables (2×3)":
+    n_vars = 2
+    generator = problem_generator2x3
+    formatter = matrix_to_tex2x3
+
+elif system_size == "3 variables (3×4)":
+    n_vars = 3
+    generator = problem_generator3x4
+    formatter = matrix_to_tex3x4
+
+#elif system_size == "4 variables (4×5)":
+    #n_vars = 4
+    #generator = generate_4x5
+    #formatter = matrix_to_tex4x5
 
 generate = st.button("Generate system")
 
@@ -198,7 +387,7 @@ def show_problems_in_columns(problems):
 
 if generate:
     prob_num = 6
-    problems = problem_generator(prob_num, difficulty=difficulty)
+    problems = generator(prob_num, difficulty=difficulty)
     show_problems_in_columns(problems)
 
 # %%
