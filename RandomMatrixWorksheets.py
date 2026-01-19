@@ -257,7 +257,9 @@ def beginner_3x4(low = -5, high = 5):
 
         # Checking for small determinant
 
-        det = np.linalg.det(matrix)
+        coef_matrix = np.delete(matrix, 3, axis = 1)
+
+        det = np.linalg.det(coef_matrix)
 
         if np.abs(det) <= 5 and det != 0:
 
@@ -309,8 +311,10 @@ def advanced_3x4(low = -20, high = 20):
         matrix = np.random.randint(low, high+1, size=(3,4))
 
         # Checking for small determinant
+        
+        coef_matrix = np.delete(matrix, 3, axis = 1)
 
-        det = np.linalg.det(matrix)
+        det = np.linalg.det(coef_matrix)
 
         if det != 0:
 
