@@ -4,9 +4,12 @@ import streamlit as st
 from math import ceil
 
 # %%
+
+# These functions help manage the conventional notation used in systems of equations
+
 def format_coef2x3(prevcoef, coef, var):
 
-    #Properly formats system of equations depending on coefficient
+    # Properly formats system of equations depending on coefficient
 
     if var == 'x':
         if coef == 0:
@@ -30,26 +33,10 @@ def format_coef2x3(prevcoef, coef, var):
         return f"+{coef}{var}"
     else:
         return f"{coef}{var}"
-
-def matrix_to_tex2x3(matrix):
     
-    # Converts matrix to system of equations
-    a, b, c = matrix[0]
-    d, e, f = matrix[1]
-
-    # Builds LaTeX string
-    latex_str = r"\begin{cases}"
-    latex_str += r"\begin{aligned}"
-    latex_str += f"{format_coef2x3(1, a,'x')}{format_coef2x3(a, b,'y')} = {c} \\\\"
-    latex_str += f"{format_coef2x3(1, d,'x')}{format_coef2x3(d, e,'y')} = {f}"
-    latex_str += r"\end{aligned}"
-    latex_str += r"\end{cases}"
-
-    return latex_str
-
 def format_coef3x4(prevcoef1,prevcoef2, coef, var):
 
-    #Properly formats system of equations depending on coefficient
+    # Properly formats system of equations depending on coefficient
 
     if var == 'x':
         if coef == 0:
@@ -73,14 +60,81 @@ def format_coef3x4(prevcoef1,prevcoef2, coef, var):
         return f"+{coef}{var}"
     else:
         return f"{coef}{var}"
+    
+def format_coef4x5(prevcoef1, prevcoef2, prevcoef3, coef, var):
+    
+    # Properly formats system of equations depending on coefficient
+
+    if var == 'x':
+        if coef == 0:
+            return "&"
+        elif coef == 1:
+            return f"&{var}"
+        elif coef == -1:
+            return f"-&{var}"
+        else:
+            return f"{coef}&{var}"
+
+    if coef == 0:
+        return ""
+    elif coef == 1 and prevcoef1 == 0 and prevcoef2 == 0 and prevcoef3 == 0:
+        return f"{var}"
+    elif coef == 1:
+        return f"+{var}"
+    elif coef == -1:
+        return f"-{var}"
+    elif coef > 0 and (prevcoef1 != 0 or prevcoef2 != 0 or prevcoef3 != 0):
+        return f"+{coef}{var}"
+    else:
+        return f"{coef}{var}"
+
+def arb_format_coef(prevcoef, coef, var):
+
+    #Properly formats system of equations depending on coefficient
+
+    if var == 'x_1':
+        if coef == 0:
+            return "&"
+        elif coef == 1:
+            return f'&{var}'
+        elif coef == -1:
+            return f"-&{var}"
+        else:
+            return f"{coef}&{var}"
+
+    if coef == 0:
+        return ""
+    elif coef == 1 and prevcoef == 0 and var == 'x_2':
+        return f"{var}"
+    elif coef == 1:
+        return f"+{var}"
+    elif coef == -1:
+        return f"-{var}"
+    elif coef > 0:
+        return f"+{coef}{var}"
+    else:
+        return f"{coef}{var}"
+    
+# These functions convert numpy matrices to systems of equations in LaTeX
+
+def matrix_to_tex2x3(matrix):
+    
+    # Converts matrix to system of equations
+    a, b, c = matrix[0]
+    d, e, f = matrix[1]
+
+    # Builds LaTeX string
+    latex_str = r"\begin{cases}"
+    latex_str += r"\begin{aligned}"
+    latex_str += f"{format_coef2x3(1, a,'x')}{format_coef2x3(a, b,'y')} = {c} \\\\"
+    latex_str += f"{format_coef2x3(1, d,'x')}{format_coef2x3(d, e,'y')} = {f}"
+    latex_str += r"\end{aligned}"
+    latex_str += r"\end{cases}"
+
+    return latex_str
 
 def matrix_to_tex3x4(matrix):
-    """
-    Converts a 3x4 augmented matrix into a LaTeX system of equations
-    with variables x, y, z.
-    """
 
-    # Unpack rows
     a, b, c, d = matrix[0]
     e, f, g, h = matrix[1]
     i, j, k, l = matrix[2]
@@ -117,32 +171,58 @@ def matrix_to_tex3x4(matrix):
 
     return latex_str
 
-def arb_format_coef(prevcoef, coef, var):
+def matrix_to_tex4x5(matrix):
 
-    #Properly formats system of equations depending on coefficient
+    # Converts matrix to system of equations
 
-    if var == 'x_1':
-        if coef == 0:
-            return "&"
-        elif coef == 1:
-            return f'&{var}'
-        elif coef == -1:
-            return f"-&{var}"
-        else:
-            return f"{coef}&{var}"
+    a, b, c, d, e = matrix[0]
+    f, g, h, i, j = matrix[1]
+    k, l, m, n, o = matrix[2]
+    p, q, r, s, t = matrix[3]
 
-    if coef == 0:
-        return ""
-    elif coef == 1 and prevcoef == 0 and var == 'x_2':
-        return f"{var}"
-    elif coef == 1:
-        return f"+{var}"
-    elif coef == -1:
-        return f"-{var}"
-    elif coef > 0:
-        return f"+{coef}{var}"
-    else:
-        return f"{coef}{var}"
+    latex_str = r"\begin{cases}"
+    latex_str += r"\begin{aligned}"
+
+    # Row 1
+    latex_str += (
+        f"{format_coef4x5(0, 0, 0, a, 'x')}"
+        f"{format_coef4x5(a, 0, 0, b, 'y')}"
+        f"{format_coef4x5(a, b, 0, c, 'z')}"
+        f"{format_coef4x5(a, b, c, d, 'w')}"
+        f"= {e} \\\\"
+    )
+
+    # Row 2
+    latex_str += (
+        f"{format_coef4x5(0, 0, 0, f, 'x')}"
+        f"{format_coef4x5(f, 0, 0, g, 'y')}"
+        f"{format_coef4x5(f, g, 0, h, 'z')}"
+        f"{format_coef4x5(f, g, h, i, 'w')}"
+        f"= {j} \\\\"
+    )
+
+    # Row 3
+    latex_str += (
+        f"{format_coef4x5(0, 0, 0, k, 'x')}"
+        f"{format_coef4x5(k, 0, 0, l, 'y')}"
+        f"{format_coef4x5(k, l, 0, m, 'z')}"
+        f"{format_coef4x5(k, l, m, n, 'w')}"
+        f"= {o} \\\\"
+    )
+
+    # Row 4
+    latex_str += (
+        f"{format_coef4x5(0, 0, 0, p, 'x')}"
+        f"{format_coef4x5(p, 0, 0, q, 'y')}"
+        f"{format_coef4x5(p, q, 0, r, 'z')}"
+        f"{format_coef4x5(p, q, r, s, 'w')}"
+        f"= {t}"
+    )
+
+    latex_str += r"\end{aligned}"
+    latex_str += r"\end{cases}"
+
+    return latex_str
 
 def arb_matrix_to_tex(matrix):
 
@@ -206,6 +286,28 @@ def problem_generator3x4(prob_num = 6, difficulty = "Beginner"):
 
     return problems
 
+def problem_generator4x5(prob_num = 6, difficulty = "Beginner"):
+
+    problems = []
+
+    for _ in range(prob_num):
+        if difficulty == "Beginner":
+
+            M = beginner_4x5(-5, 5)
+
+        elif difficulty == "Intermediate":
+
+            M = beginner_4x5(-12, 12)
+    
+        else:
+            M = advanced_4x5(-20, 20)
+        
+        # Convert to LaTeX but return string instead of displaying
+        latex = matrix_to_tex4x5(M)
+        problems.append(latex)
+
+    return problems
+
 def worksheet_generator(problems):
 
     header = r"""\documentclass[12pt]{article}
@@ -239,11 +341,7 @@ def beginner_2x3(low = -5, high = 5):
 
     # Ensures the final matrix has a nice RREF
     
-    b1 = matrix[0][2]
-    b2 = matrix[1][2]
-
-    matrix[0][2] = det*b1
-    matrix[1][2] = det*b2
+    matrix[:,2] *= det
 
     return matrix
 
@@ -259,7 +357,7 @@ def beginner_3x4(low = -5, high = 5):
 
         coef_matrix = np.delete(matrix, 3, axis = 1)
 
-        det = np.linalg.det(coef_matrix)
+        det = int(round(np.linalg.det(coef_matrix)))
 
         if np.abs(det) <= 5 and det != 0:
 
@@ -267,13 +365,31 @@ def beginner_3x4(low = -5, high = 5):
 
     # Ensures the final matrix has a nice RREF
     
-    b1 = matrix[0][3]
-    b2 = matrix[1][3]
-    b3 = matrix[2][3]
+    matrix[:,3] *= det
 
-    matrix[0][3] = det*b1
-    matrix[1][3] = det*b2
-    matrix[2][3] = det*b3
+    return matrix
+
+def beginner_4x5(low = -5, high = 5):
+
+    # Generates a (uniformly) random matrix
+
+    while True: 
+
+        matrix = np.random.randint(low, high+1, size=(4,5))
+
+        # Checking for small determinant
+
+        coef_matrix = np.delete(matrix, 4, axis = 1)
+
+        det = int(round(np.linalg.det(coef_matrix)))
+
+        if np.abs(det) <= 5 and det != 0:
+
+            break
+
+    # Ensures the final matrix has a nice RREF
+    
+    matrix[:,4] *= det
 
     return matrix
 
@@ -294,11 +410,7 @@ def advanced_2x3(low = -20, high = 20):
 
     # Ensures the final matrix has a nice RREF
 
-    b1 = matrix[0][2]
-    b2 = matrix[1][2]
-
-    matrix[0][2] = det*b1
-    matrix[1][2] = det*b2
+    matrix[:,2] *= det
 
     return matrix
 
@@ -311,10 +423,10 @@ def advanced_3x4(low = -20, high = 20):
         matrix = np.random.randint(low, high+1, size=(3,4))
 
         # Checking for small determinant
-        
+
         coef_matrix = np.delete(matrix, 3, axis = 1)
 
-        det = np.linalg.det(coef_matrix)
+        det = int(round(np.linalg.det(coef_matrix)))
 
         if det != 0:
 
@@ -322,13 +434,31 @@ def advanced_3x4(low = -20, high = 20):
 
     # Ensures the final matrix has a nice RREF
     
-    b1 = matrix[0][3]
-    b2 = matrix[1][3]
-    b3 = matrix[2][3]
+    matrix[:,3] *= det
 
-    matrix[0][3] = det*b1
-    matrix[1][3] = det*b2
-    matrix[2][3] = det*b3
+    return matrix
+
+def advanced_4x5(low = -20, high = 20):
+
+    # Generates a (uniformly) random matrix
+
+    while True: 
+
+        matrix = np.random.randint(low, high+1, size=(4,5))
+
+        # Checking for small determinant
+
+        coef_matrix = np.delete(matrix, 4, axis = 1)
+
+        det = int(round(np.linalg.det(coef_matrix)))
+
+        if det != 0:
+
+            break
+
+    # Ensures the final matrix has a nice RREF
+    
+    matrix[:,4] *= det
 
     return matrix
 
@@ -364,10 +494,10 @@ elif system_size == "3 variables (3×4)":
     generator = problem_generator3x4
     formatter = matrix_to_tex3x4
 
-#elif system_size == "4 variables (4×5)":
-    #n_vars = 4
-    #generator = generate_4x5
-    #formatter = matrix_to_tex4x5
+elif system_size == "4 variables (4×5)":
+    n_vars = 4
+    generator = problem_generator4x5
+    formatter = matrix_to_tex4x5
 
 generate = st.button("Generate system")
 
@@ -395,6 +525,4 @@ if generate:
     show_problems_in_columns(problems)
 
 # %%
-
-
 
