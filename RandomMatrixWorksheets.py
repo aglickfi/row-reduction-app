@@ -5,6 +5,147 @@ from math import ceil
 
 # %%
 
+# This group of functions generates the matrices to be row-reduced
+
+def beginner_2x3(low = -5, high = 5):
+
+    # Generates a (uniformly) random matrix
+
+    while True: 
+
+        matrix = np.random.randint(low, high+1, size=(2,3))
+
+        # Checking for small determinant
+
+        det = matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0]
+
+        if np.abs(det) <= 5 and det != 0:
+
+            break
+
+    # Ensures the final matrix has a nice RREF
+    
+    matrix[:,2] *= det
+
+    return matrix
+
+def beginner_3x4(low = -5, high = 5):
+
+    # Generates a (uniformly) random matrix
+
+    while True: 
+
+        matrix = np.random.randint(low, high+1, size=(3,4))
+
+        # Checking for small determinant
+
+        coef_matrix = np.delete(matrix, 3, axis = 1)
+
+        det = int(round(np.linalg.det(coef_matrix)))
+
+        if np.abs(det) <= 5 and det != 0:
+
+            break
+
+    # Ensures the final matrix has a nice RREF
+    
+    matrix[:,3] *= det
+
+    return matrix
+
+def beginner_4x5(low = -5, high = 5):
+
+    # Generates a (uniformly) random matrix
+
+    while True: 
+
+        matrix = np.random.randint(low, high+1, size=(4,5))
+
+        # Checking for small determinant
+
+        coef_matrix = np.delete(matrix, 4, axis = 1)
+
+        det = int(round(np.linalg.det(coef_matrix)))
+
+        if np.abs(det) <= 5 and det != 0:
+
+            break
+
+    # Ensures the final matrix has a nice RREF
+    
+    matrix[:,4] *= det
+
+    return matrix
+
+
+def advanced_2x3(low = -20, high = 20):
+
+    # Generates a (uniformly) random matrix
+
+    while True:
+
+        matrix = np.random.randint(low, high+1, size=(2,3))
+        det = matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0]
+
+        if det != 0:
+            break
+
+
+
+    # Ensures the final matrix has a nice RREF
+
+    matrix[:,2] *= det
+
+    return matrix
+
+def advanced_3x4(low = -20, high = 20):
+
+    # Generates a (uniformly) random matrix
+
+    while True: 
+
+        matrix = np.random.randint(low, high+1, size=(3,4))
+
+        # Checking for small determinant
+
+        coef_matrix = np.delete(matrix, 3, axis = 1)
+
+        det = int(round(np.linalg.det(coef_matrix)))
+
+        if det != 0:
+
+            break
+
+    # Ensures the final matrix has a nice RREF
+    
+    matrix[:,3] *= det
+
+    return matrix
+
+def advanced_4x5(low = -20, high = 20):
+
+    # Generates a (uniformly) random matrix
+
+    while True: 
+
+        matrix = np.random.randint(low, high+1, size=(4,5))
+
+        # Checking for small determinant
+
+        coef_matrix = np.delete(matrix, 4, axis = 1)
+
+        det = int(round(np.linalg.det(coef_matrix)))
+
+        if det != 0:
+
+            break
+
+    # Ensures the final matrix has a nice RREF
+    
+    matrix[:,4] *= det
+
+    return matrix
+
 # These functions help manage the conventional notation used in systems of equations
 
 def format_coef2x3(prevcoef, coef, var):
@@ -322,145 +463,6 @@ def worksheet_generator(problems):
     footer = r"\end{document}"
     
     return header + body + footer
-
-def beginner_2x3(low = -5, high = 5):
-
-    # Generates a (uniformly) random matrix
-
-    while True: 
-
-        matrix = np.random.randint(low, high+1, size=(2,3))
-
-        # Checking for small determinant
-
-        det = matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0]
-
-        if np.abs(det) <= 5 and det != 0:
-
-            break
-
-    # Ensures the final matrix has a nice RREF
-    
-    matrix[:,2] *= det
-
-    return matrix
-
-def beginner_3x4(low = -5, high = 5):
-
-    # Generates a (uniformly) random matrix
-
-    while True: 
-
-        matrix = np.random.randint(low, high+1, size=(3,4))
-
-        # Checking for small determinant
-
-        coef_matrix = np.delete(matrix, 3, axis = 1)
-
-        det = int(round(np.linalg.det(coef_matrix)))
-
-        if np.abs(det) <= 5 and det != 0:
-
-            break
-
-    # Ensures the final matrix has a nice RREF
-    
-    matrix[:,3] *= det
-
-    return matrix
-
-def beginner_4x5(low = -5, high = 5):
-
-    # Generates a (uniformly) random matrix
-
-    while True: 
-
-        matrix = np.random.randint(low, high+1, size=(4,5))
-
-        # Checking for small determinant
-
-        coef_matrix = np.delete(matrix, 4, axis = 1)
-
-        det = int(round(np.linalg.det(coef_matrix)))
-
-        if np.abs(det) <= 5 and det != 0:
-
-            break
-
-    # Ensures the final matrix has a nice RREF
-    
-    matrix[:,4] *= det
-
-    return matrix
-
-
-def advanced_2x3(low = -20, high = 20):
-
-    # Generates a (uniformly) random matrix
-
-    while True:
-
-        matrix = np.random.randint(low, high+1, size=(2,3))
-        det = matrix[0][0]*matrix[1][1] - matrix[0][1]*matrix[1][0]
-
-        if det != 0:
-            break
-
-
-
-    # Ensures the final matrix has a nice RREF
-
-    matrix[:,2] *= det
-
-    return matrix
-
-def advanced_3x4(low = -20, high = 20):
-
-    # Generates a (uniformly) random matrix
-
-    while True: 
-
-        matrix = np.random.randint(low, high+1, size=(3,4))
-
-        # Checking for small determinant
-
-        coef_matrix = np.delete(matrix, 3, axis = 1)
-
-        det = int(round(np.linalg.det(coef_matrix)))
-
-        if det != 0:
-
-            break
-
-    # Ensures the final matrix has a nice RREF
-    
-    matrix[:,3] *= det
-
-    return matrix
-
-def advanced_4x5(low = -20, high = 20):
-
-    # Generates a (uniformly) random matrix
-
-    while True: 
-
-        matrix = np.random.randint(low, high+1, size=(4,5))
-
-        # Checking for small determinant
-
-        coef_matrix = np.delete(matrix, 4, axis = 1)
-
-        det = int(round(np.linalg.det(coef_matrix)))
-
-        if det != 0:
-
-            break
-
-    # Ensures the final matrix has a nice RREF
-    
-    matrix[:,4] *= det
-
-    return matrix
 
 #display(Math(matrix_to_tex(small_nice_2x3(-10,10))))
 
